@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini TikTok Clone</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000; font-family: sans-serif; color: #fff; overflow: hidden; }
+        
+        /* Container cuộn video dọc */
+        .video-container {
+            height: 100vh;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+        }
+        
+        .video-player {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Thanh công cụ bên phải */
+        .side-bar {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .icon-btn span { font-size: 30px; }
+        .icon-btn p { font-size: 12px; margin-top: 5px; }
+        .liked { color: #ff3b5c !important; transform: scale(1.2); }
+
+        /* Thông tin video bên dưới */
+        .video-info {
+            position: absolute;
+            left: 15px;
+            bottom: 30px;
+            max-width: 80%;
+        }
+        .video-info h3 { margin-bottom: 10px; }
+
+        /* Hiệu ứng yêu thích của mình: Chế độ tối/sáng & Nhạc quay */
+        .music-disc {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 5px solid #333;
+            animation: rotate 3s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="video-container">
+    <section class="video-player">
+        <video loop onclick="this.paused ? this.play() : this.pause()">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        
+        <div class="side-bar">
+            <button class="icon-btn" onclick="likeVideo(this)">
+                <span>❤</span>
+                <p>0</p>
+            </button>
+            <button class="icon-btn" onclick="alert('Tính năng bình luận đang phát triển!')">
+                <span>💬</span>
+                <p>12</p>
+            </button>
+            <button class="icon-btn" onclick="shareVideo()">
+                <span>➥</span>
+                <p>Chia sẻ</p>
+            </button>
+            <div class="music-disc" style="background: url('https://cdn-icons-png.flaticon.com/512/100/100652.png') center/cover;"></div>
+        </div>
+
+        <div class="video-info">
+            <h3>@Gemini_Partner</h3>
+            <p>Chào mừng đến với trang web giống Tiktok của bạn! 🚀 #coding #tiktok</p>
+        </div>
+    </section>
+
+    <section class="video-player">
+        <video loop onclick="this.paused ? this.play() : this.pause()">
+            <source src="https://www.w3schools.com/html/horse.mp4" type="video/mp4">
+        </video>
+        
+        <div class="side-bar">
+            <button class="icon-btn" onclick="likeVideo(this)">
+                <span>❤</span>
+                <p>0</p>
+            </button>
+            <button class="icon-btn"><span>💬</span><p>5</p></button>
+            <button class="icon-btn" onclick="shareVideo()"><span>➥</span><p>Chia sẻ</p></button>
+            <div class="music-disc" style="background: url('https://cdn-icons-png.flaticon.com/512/100/100652.png') center/cover;"></div>
+        </div>
+
+        <div class="video-info">
+            <h3>@Thinh_Dev</h3>
+            <p>Video thứ 2 tự động chuyển khi cuộn xuống nè!</p>
+        </div>
+    </section>
+</div>
+
+<script>
+    // Tính năng tim: mỗi người chỉ tim 1 lần
+    function likeVideo(btn) {
+        const icon = btn.querySelector('span');
+        const count = btn.querySelector('p');
+        
+        if (!btn.classList.contains('liked')) {
+            btn.classList.add('liked');
+            count.innerText = parseInt(count.innerText) + 1;
+            // Hiệu ứng rung nhẹ khi tim
+        } else {
+            alert("Bạn đã thả tim video này rồi!");
+        }
+    }
+
+    // Tính năng chia sẻ
+    function shareVideo() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Xem video này trên Tiktok Clone',
+                url: window.location.href
+            });
+        } else {
+            alert("Link web đã được copy vào bộ nhớ tạm!");
+            navigator.clipboard.writeText(window.location.href);
+        }
+    }
+
+    // Tự động chạy video khi cuộn đến (đặc sản Tiktok)
+    const videos = document.querySelectorAll('video');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.play();
+            } else {
+                entry.target.pause();
+            }
+        });
+    }, { threshold: 0.5 });
+
+    videos.forEach(video => observer.observe(video));
+</script>
+
+</body>
+</html>
